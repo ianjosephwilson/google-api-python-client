@@ -65,6 +65,7 @@ from googleapiclient.schema import Schemas
 from oauth2client.anyjson import simplejson
 from oauth2client.util import _add_query_parameter
 from oauth2client.util import positional
+from oauth2client.util import determine_character_encoding
 
 
 # The client library requires a version of httplib2 that supports RETRIES.
@@ -199,6 +200,9 @@ def build(serviceName,
                                                             version))
   if resp.status >= 400:
     raise HttpError(resp, content, uri=requested_url)
+
+  encoding = determine_character_encoding(resp)
+  content = content.decode(encoding)
 
   try:
     service = simplejson.loads(content)

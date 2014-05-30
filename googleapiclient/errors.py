@@ -44,8 +44,10 @@ class HttpError(Error):
   def _get_reason(self):
     """Calculate the reason for the error from the response content."""
     reason = self.resp.reason
+    encoding = determine_character_encoding(self.resp)
+    content = self.content.decode(encoding)
     try:
-      data = simplejson.loads(self.content)
+      data = simplejson.loads(content)
       reason = data['error']['message']
     except (ValueError, KeyError):
       pass
